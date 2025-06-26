@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Management System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Loading Spinner -->
+    <div id="loading" class="loading hidden">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Login/Register Section -->
+    <div id="auth-section" class="auth-section">
+        <div class="auth-container">
+            <div class="auth-header">
+                <h1><i class="fas fa-graduation-cap"></i> School Management System</h1>
+                <p>Manage your school efficiently with role-based access</p>
+            </div>
+
+            <!-- Login Form -->
+            <div id="login-form" class="auth-form active">
+                <h2>Login</h2>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="loginEmail">Email</label>
+                        <input type="email" id="loginEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+                        <input type="password" id="loginPassword" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </form>
+                <p class="auth-switch">
+                    Don't have an account? 
+                    <a href="#" onclick="showRegister()">Register here</a>
+                </p>
+            </div>
+
+            <!-- Register Form -->
+            <div id="register-form" class="auth-form">
+                <h2>Register</h2>
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label for="registerName">Full Name</label>
+                        <input type="text" id="registerName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerEmail">Email</label>
+                        <input type="email" id="registerEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPassword">Password</label>
+                        <input type="password" id="registerPassword" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label for="registerRole">Role</label>
+                        <select id="registerRole" required>
+                            <option value="">Select Role</option>
+                            <option value="admin">Admin</option>
+                            <option value="teacher">Teacher</option>
+                            <option value="student">Student</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="studentIdGroup" style="display: none;">
+                        <label for="studentId">Student ID</label>
+                        <input type="text" id="studentId">
+                    </div>
+                    <div class="form-group" id="teacherIdGroup" style="display: none;">
+                        <label for="teacherId">Teacher ID</label>
+                        <input type="text" id="teacherId">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Register</button>
+                </form>
+                <p class="auth-switch">
+                    Already have an account? 
+                    <a href="#" onclick="showLogin()">Login here</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Section -->
+    <div id="dashboard-section" class="dashboard-section hidden">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-brand">
+                <i class="fas fa-graduation-cap"></i>
+                <span>School Management</span>
+            </div>
+            <div class="nav-user">
+                <span id="userName">Welcome</span>
+                <button onclick="logout()" class="btn btn-outline">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </nav>
+
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <!-- Admin Menu -->
+            <div id="admin-menu" class="menu-section hidden">
+                <h3><i class="fas fa-user-shield"></i> Admin Panel</h3>
+                <ul class="menu-list">
+                    <li><a href="#" onclick="showSection('dashboard')" class="active">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a></li>
+                    <li><a href="#" onclick="showSection('users')">
+                        <i class="fas fa-users"></i> Manage Users
+                    </a></li>
+                    <li><a href="#" onclick="showSection('subjects')">
+                        <i class="fas fa-book"></i> Manage Subjects
+                    </a></li>
+                    <li><a href="#" onclick="showSection('grades')">
+                        <i class="fas fa-layer-group"></i> Manage Grades
+                    </a></li>
+                    <li><a href="#" onclick="showSection('marks')">
+                        <i class="fas fa-chart-line"></i> View All Marks
+                    </a></li>
+                </ul>
+            </div>
+
+            <!-- Teacher Menu -->
+            <div id="teacher-menu" class="menu-section hidden">
+                <h3><i class="fas fa-chalkboard-teacher"></i> Teacher Panel</h3>
+                <ul class="menu-list">
+                    <li><a href="#" onclick="showSection('teacher-dashboard')" class="active">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a></li>
+                    <li><a href="#" onclick="showSection('assign-marks')">
+                        <i class="fas fa-edit"></i> Assign Marks
+                    </a></li>
+                    <li><a href="#" onclick="showSection('view-students')">
+                        <i class="fas fa-user-graduate"></i> View Students
+                    </a></li>
+                    <li><a href="#" onclick="showSection('teacher-marks')">
+                        <i class="fas fa-chart-bar"></i> My Marks
+                    </a></li>
+                </ul>
+            </div>
+
+            <!-- Student Menu -->
+            <div id="student-menu" class="menu-section hidden">
+                <h3><i class="fas fa-user-graduate"></i> Student Panel</h3>
+                <ul class="menu-list">
+                    <li><a href="#" onclick="showSection('student-dashboard')" class="active">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a></li>
+                    <li><a href="#" onclick="showSection('my-marks')">
+                        <i class="fas fa-chart-line"></i> My Marks
+                    </a></li>
+                    <li><a href="#" onclick="showSection('my-profile')">
+                        <i class="fas fa-user"></i> My Profile
+                    </a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Admin Dashboard -->
+            <div id="dashboard" class="content-section active">
+                <div class="page-header">
+                    <h2><i class="fas fa-tachometer-alt"></i> Admin Dashboard</h2>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalUsers">0</h3>
+                            <p>Total Users</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalTeachers">0</h3>
+                            <p>Teachers</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalStudents">0</h3>
+                            <p>Students</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalSubjects">0</h3>
+                            <p>Subjects</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Management -->
+            <div id="users" class="content-section">
+                <div class="page-header">
+                    <h2><i class="fas fa-users"></i> Manage Users</h2>
+                    <button onclick="showAddUserModal()" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add User
+                    </button>
+                </div>
+                <div class="filter-section">
+                    <select id="userRoleFilter" onchange="filterUsers()">
+                        <option value="">All Roles</option>
+                        <option value="admin">Admin</option>
+                        <option value="teacher">Teacher</option>
+                        <option value="student">Student</option>
+                    </select>
+                </div>
+                <div class="table-container">
+                    <table id="usersTable">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>ID</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Subjects Management -->
+            <div id="subjects" class="content-section">
+                <div class="page-header">
+                    <h2><i class="fas fa-book"></i> Manage Subjects</h2>
+                    <button onclick="showAddSubjectModal()" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add Subject
+                    </button>
+                </div>
+                <div class="table-container">
+                    <table id="subjectsTable">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Code</th>
+                                <th>Description</th>
+                                <th>Teacher</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Grades Management -->
+            <div id="grades" class="content-section">
+                <div class="page-header">
+                    <h2><i class="fas fa-layer-group"></i> Manage Grades</h2>
+                    <button onclick="showAddGradeModal()" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add Grade
+                    </button>
+                </div>
+                <div class="table-container">
+                    <table id="gradesTable">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Level</th>
+                                <th>Section</th>
+                                <th>Students</th>
+                                <th>Class Teacher</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Marks Management -->
+            <div id="marks" class="content-section">
+                <div class="page-header">
+                    <h2><i class="fas fa-chart-line"></i> All Marks</h2>
+                </div>
+                <div class="table-container">
+                    <table id="marksTable">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Subject</th>
+                                <th>Grade</th>
+                                <th>Marks</th>
+                                <th>Exam Type</th>
+                                <th>Date</th>
+                                <th>Teacher</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Teacher Dashboard -->
+            <div id="teacher-dashboard" class="content-section">
+                <div class="page-header">
+                    <h2><i class="fas fa-chalkboard-teacher"></i> Teacher Dashboard</h2>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="teacherStudents">0</h3>
+                            <p>My Students</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="teacherSubjects">0</h3>
+                            <p>My Subjects</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="teacherMarks">0</h3>
+                            <p>Marks Assigned</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Assign Marks -->
+            <div id="assign-marks" class="content-section">
+                <div class="page-header">
+                    <h2><i class="fas fa-edit"></i> Assign Marks</h2>
+                </div>
+                <div class="form-container">
+                    <form id="assignMarksForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="markStudent">Student</label>
+                                <select id="markStudent" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="markSubject">Subject</label>
+                                <select id="markSubject" required></select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="markGrade">Grade</label>
+                                <select id="markGrade" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="markValue">Marks (0-100)</label>
+                                <input type="number" id="markValue" min="0" max="100" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="examType">Exam Type</label>
+                                <select id="examType" required>
+                                    <option value="">Select Type</option>
+                                    <option value="quiz">Quiz</option>
+                                    <option value="midterm">Midterm</option>
+                                    <option value="final">Final</option>
+                                    <option value="assignment">Assignment</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="examDate">Exam Date</label>
+                                <input type="date" id="examDate" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="markRemarks">Remarks (Optional)</label>
+                            <textarea id="markRemarks" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Assign Marks</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- View Students -->
+            <div id="view-students" class="content-section">
+                <div class="page-header">
+                    <h2><i class="fas fa-user-graduate"></i> My Students</h2>
+                </div>
+                <div class="table-container">
+                    <table id="teacherStudentsTable">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Student ID</th>
+                                <th>Grade</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Teacher Marks -->
+            <div id="teacher-marks" class="content-section">
+                <div class="page-header">
+                    <h2><i class="fas fa-chart-bar"></i> Marks I've Assigned</h2>
+                </div>
+                <div class="table-container">
+                    <table id="teacherMarksTable">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Subject</th>
+                                <th>Marks</th>
+                                <th>Exam Type</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Student Dashboard -->
+            <div id="student-dashboard" class="content-section">
+                <div class="page-header">
+                    <h2><i class="fas fa-user-graduate"></i> Student Dashboard</h2>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="studentAverage">0</h3>
+                            <p>Average Score</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="studentSubjects">0</h3>
+                            <p>Enrolled Subjects</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="studentHighest">0</h3>
+                            <p>Highest Score</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- My Marks -->
+            <div id="my-marks" class="content-section">
+                <div class="page-header">
+                    <h2><i class="fas fa-chart-line"></i> My Marks</h2>
+                </div>
+                <div class="table-container">
+                    <table id="studentMarksTable">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Marks</th>
+                                <th>Exam Type</th>
+                                <th>Date</th>
+                                <th>Teacher</th>
+                                <th>Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- My Profile -->
+            <div id="my-profile" class="content-section">
+                <div class="page-header">
+                    <h2><i class="fas fa-user"></i> My Profile</h2>
+                </div>
+                <div class="profile-container">
+                    <div class="profile-card">
+                        <div class="profile-header">
+                            <div class="profile-avatar">
+                                <i class="fas fa-user-circle"></i>
+                            </div>
+                            <div class="profile-info">
+                                <h3 id="profileName">Student Name</h3>
+                                <p id="profileEmail">student@email.com</p>
+                                <span class="profile-role" id="profileRole">Student</span>
+                            </div>
+                        </div>
+                        <div class="profile-details">
+                            <div class="detail-item">
+                                <label>Student ID:</label>
+                                <span id="profileStudentId">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Enrolled Grade:</label>
+                                <span id="profileGrade">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Member Since:</label>
+                                <span id="profileJoinDate">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="modal-overlay" class="modal-overlay hidden">
+        <!-- Add User Modal -->
+        <div id="addUserModal" class="modal">
+            <div class="modal-header">
+                <h3>Add New User</h3>
+                <button onclick="closeModal()" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addUserForm">
+                    <div class="form-group">
+                        <label for="newUserName">Full Name</label>
+                        <input type="text" id="newUserName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newUserEmail">Email</label>
+                        <input type="email" id="newUserEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newUserPassword">Password</label>
+                        <input type="password" id="newUserPassword" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label for="newUserRole">Role</label>
+                        <select id="newUserRole" required>
+                            <option value="">Select Role</option>
+                            <option value="admin">Admin</option>
+                            <option value="teacher">Teacher</option>
+                            <option value="student">Student</option>
+                        </select>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" onclick="closeModal()" class="btn btn-secondary">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Add User</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Add Subject Modal -->
+        <div id="addSubjectModal" class="modal">
+            <div class="modal-header">
+                <h3>Add New Subject</h3>
+                <button onclick="closeModal()" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addSubjectForm">
+                    <div class="form-group">
+                        <label for="newSubjectName">Subject Name</label>
+                        <input type="text" id="newSubjectName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newSubjectCode">Subject Code</label>
+                        <input type="text" id="newSubjectCode" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newSubjectDescription">Description</label>
+                        <textarea id="newSubjectDescription" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="newSubjectTeacher">Assign Teacher</label>
+                        <select id="newSubjectTeacher">
+                            <option value="">Select Teacher (Optional)</option>
+                        </select>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" onclick="closeModal()" class="btn btn-secondary">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Add Subject</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Add Grade Modal -->
+        <div id="addGradeModal" class="modal">
+            <div class="modal-header">
+                <h3>Add New Grade</h3>
+                <button onclick="closeModal()" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addGradeForm">
+                    <div class="form-group">
+                        <label for="newGradeName">Grade Name</label>
+                        <input type="text" id="newGradeName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newGradeLevel">Level (1-12)</label>
+                        <input type="number" id="newGradeLevel" min="1" max="12" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newGradeSection">Section</label>
+                        <input type="text" id="newGradeSection" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newGradeTeacher">Class Teacher</label>
+                        <select id="newGradeTeacher">
+                            <option value="">Select Teacher (Optional)</option>
+                        </select>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" onclick="closeModal()" class="btn btn-secondary">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Add Grade</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

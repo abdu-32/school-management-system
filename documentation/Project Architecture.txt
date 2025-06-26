@@ -1,0 +1,21 @@
+Project Architecture
+The architecture of this school management system project is organized into three primary components:
+
+Backend – Built using Node.js and Express.js, with MongoDB for the database and Mongoose as the ODM. It handles all server-side logic, authentication, and communication with the database.
+
+Frontend – Developed using Angular. This layer is responsible for rendering the user interface and making HTTP requests to interact with the backend APIs.
+
+.vscode Configuration – Contains editor-specific settings to ensure consistent development practices across environments.
+
+Each component is structured with clear separation of concerns, making the project modular, maintainable, and scalable.
+
+Challenges Faced
+As this was my first time working with Angular, one of the initial challenges I encountered was understanding the local development environment. Unlike React, which typically runs on port 3000, Angular defaults to port 4200. This caused some confusion when trying to access the frontend through the browser.
+
+After troubleshooting and inspecting the Angular configuration and the application startup logs, I was able to identify the correct port and access the interface successfully. I tested the login page and confirmed that it integrated well with the backend services.
+
+Deployment Attempt
+I attempted to deploy the backend using Railway, a modern deployment platform. However, as this was my first time deploying a full-stack project, I encountered some difficulties with configuration, especially around environmental variables, build settings, and service setup.
+
+While the deployment was not completed successfully, the experience helped me understand important concepts around CI/CD, server hosting, and app deployment — skills I am actively working to improve.
+
