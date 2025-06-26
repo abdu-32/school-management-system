@@ -1,5 +1,5 @@
 // API Configuration
-const API_BASE_URL = "http://localhost:5000/api"
+const API_BASE_URL = "https://school-management-system-backend-8i26.onrender.com/api"
 
 // Global state
 let currentUser = null
